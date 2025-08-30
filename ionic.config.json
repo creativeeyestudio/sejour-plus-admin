@@ -1,0 +1,7 @@
+{
+  "name": "sejour-plus-admin",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
