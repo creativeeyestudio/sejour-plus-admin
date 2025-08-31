@@ -1,0 +1,11 @@
+.form {
+    --ion-grid-padding: 30px;
+
+    &__col {
+        --ion-grid-column-padding: 10px;
+    }
+
+    &__btn {
+        margin: 30px 0 0 10px;
+    }
+}

@@ -25,7 +25,8 @@ export class Api {
 
   async createHotel(hotelPayload: HotelPayload) {
     try {
-      const response = await axios.post<HotelData>(`${this.hotelDataApi}`, hotelPayload)
+      const response = await axios.post<HotelData>(`${this.hotelDataApi}`, hotelPayload);
+      console.log("Hôtel crée");
       return response.data;
     } catch (error) {
       console.error(error);

@@ -1,13 +1,32 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>hotel-data</ion-title>
+    <ion-title>Fiche Hôtel</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">hotel-data</ion-title>
+      <ion-title size="large">Fiche Hôtel</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  @if (newHotel) {
+    <form [formGroup]="formData">
+      <ion-grid class="ion-padding form">
+        <ion-row class="form__row">
+          @for (item of formModel; track $index) {
+            <ion-col size="12" [sizeMd]='item.sizeMd' [sizeLg]='item.sizeLg' class="form__col">
+              <ion-input [label]='item.label' [type]="item.type" labelPlacement="stacked" fill="outline" class="form__input" [formControlName]="item.formControlName"></ion-input>
+            </ion-col>  
+          }
+        </ion-row>
+        <ion-row>
+          <ion-button (click)="this.onSubmitForm()" class="form__btn" expand="full">Enregistrer mes infos</ion-button>
+        </ion-row>
+      </ion-grid>  
+    </form>
+  } @else {
+    <p>Pas la peine</p>
+  }
 </ion-content>
