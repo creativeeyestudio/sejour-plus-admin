@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HotelData } from '../interfaces/hotel-data';
+import { HotelData, HotelPayload } from '../interfaces/hotel-data';
 import axios from 'axios';
 
 @Injectable({
@@ -43,5 +43,3 @@ export class Api {
     }
   }
 }
-
-export type HotelPayload = Omit<HotelData, "id">;

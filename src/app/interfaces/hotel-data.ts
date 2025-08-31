@@ -4,10 +4,12 @@ export interface HotelData {
     hotelPhone: string,
     hotelEmail: string,
     hotelMap: string,
-    hotelWebsite: string,
+    hotelWebsite?: string,
     hotelCheckIn: string | Date,
     hotelCheckOut: string | Date,
     hotelWifiName: string,
     hotelWifiPassword: string,
-    hotelParking: string
+    hotelParking?: string
 }
+
+export type HotelPayload = Omit<HotelData, "id">;
