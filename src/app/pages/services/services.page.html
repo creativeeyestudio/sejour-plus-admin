@@ -20,7 +20,7 @@
         <ion-item>
           <ion-label>{{ service.serviceName }}</ion-label>
           <ion-button slot="end">Modifier</ion-button>
-          <ion-button slot="end">Supprimer</ion-button>
+          <ion-button slot="end" (click)="this.onDeleteService(service.id)">Supprimer</ion-button>
         </ion-item>    
       }
     } @else {

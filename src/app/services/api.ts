@@ -68,4 +68,14 @@ export class Api {
       throw error;
     }
   }
+
+  async deleteService(id: number) {
+    try {
+      const response = await axios.delete(`${this.servicesApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }

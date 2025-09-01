@@ -62,4 +62,14 @@ export class ServicesPage implements OnInit {
       console.error("Erreur lors de la création du service :", error);
     }
   }
+
+  async onDeleteService(id: number) {
+    try {
+      await this.api.deleteService(id)
+        .then(async () => await this.initServicesList());
+    } catch (error) {
+      console.error("Erreur lors de la suppression du service :", error);
+    }
+    
+  }
 }
