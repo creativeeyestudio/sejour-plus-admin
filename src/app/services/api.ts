@@ -51,7 +51,17 @@ export class Api {
 
   async getServices(): Promise<ServicesList> {
     try {
-      const response = await axios.get(`${this.servicesApi}`);
+      const response = await axios.get<ServicesList>(`${this.servicesApi}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getService(id: number): Promise<Service> {
+    try {
+      const response = await axios.get<Service>(`${this.servicesApi}/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -62,6 +72,16 @@ export class Api {
   async createService(servicePayload: ServicePayload) {
     try {
       const response = await axios.post<Service>(`${this.servicesApi}`, servicePayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async updateService(servicePayload: Partial<ServicePayload>, id: number) {
+    try {
+      const response = await axios.patch<Service>(`${this.servicesApi}/${id}`, servicePayload);
       return response.data;
     } catch (error) {
       console.error(error);

@@ -19,8 +19,8 @@
       @for (service of services.member; track service.id) {
         <ion-item>
           <ion-label>{{ service.serviceName }}</ion-label>
-          <ion-button slot="end">Modifier</ion-button>
-          <ion-button slot="end" (click)="this.onDeleteService(service.id)">Supprimer</ion-button>
+          <ion-button slot="end" (click)="this.updateService(service.id)">Modifier</ion-button>
+          <ion-button slot="end" (click)="this.deleteService(service.id)">Supprimer</ion-button>
         </ion-item>    
       }
     } @else {
@@ -49,7 +49,7 @@
               <ion-textarea label="Description" labelPlacement="stacked" formControlName="serviceDesc"></ion-textarea>
             </ion-item>
             <ion-item lines="none">
-              <ion-button (click)="onSubmitForm()">Créer l'activité</ion-button>
+              <ion-button (click)="onSubmitForm()">{{ formSubmitLabel }}</ion-button>
             </ion-item>
           </ion-list> 
       </ion-content>
