@@ -18,6 +18,7 @@ export class HotelDataPage implements OnInit {
 
   hotel?: HotelData;
   newHotel: boolean = false;
+  updateHotel: boolean = false;
 
   constructor(public api: Api, public dtConvert: DateTimeConverter) { }
 
@@ -31,13 +32,10 @@ export class HotelDataPage implements OnInit {
   async getHotelData() {
     try {
       this.hotel = await this.api.getHotel();
-      console.log(this.hotel);
     } catch (error: any) {
-      if (error.response.status === 404) {
-        this.newHotel = true;
-      } else {
-        console.error(error);
-      }
+      (error.response.status === 404) 
+        ? this.newHotel = true
+        : console.error(error)
     }
   }
 
@@ -45,50 +43,50 @@ export class HotelDataPage implements OnInit {
   // FORMULAIRE
   // ---------------------------------------------
   formModel: FormField[] = [
-    { label: 'Nom de l\'hôtel', type: 'text', sizeMd: '12', sizeLg: '12', formControlName: 'hotelName' },
-    { label: 'Téléphone', type: 'tel', sizeMd: '6', sizeLg: '6', formControlName: 'hotelPhone' },
-    { label: 'E-mail', type: 'email', sizeMd: '6', sizeLg: '6', formControlName: 'hotelEmail' },
-    { label: 'Lien Map', type: 'url', sizeMd: '12', sizeLg: '12', formControlName: 'hotelMap' },
-    { label: 'Site Internet', type: 'url', sizeMd: '12', sizeLg: '12', formControlName: 'hotelWebsite' },
-    { label: 'Check In', type: 'time', sizeMd: '6', sizeLg: '6', formControlName: 'hotelCheckIn' },
-    { label: 'Check Out', type: 'time', sizeMd: '6', sizeLg: '6', formControlName: 'hotelCheckOut' },
-    { label: 'Nom du Wi-Fi', type: 'text', sizeMd: '6', sizeLg: '6', formControlName: 'hotelWifiName' },
-    { label: 'Mot de passe Wi-Fi', type: 'text', sizeMd: '6', sizeLg: '6', formControlName: 'hotelWifiPassword' },
-    { label: 'Code Parking', type: 'text', sizeMd: '12', sizeLg: '12', formControlName: 'hotelParking' },
+    { label: "Nom de l'hôtel", type: "text", sizeMd: '12', sizeLg: '12', formControlName: 'hotelName', required: true },
+    { label: "Téléphone", type: "tel", sizeMd: '6', sizeLg: '6', formControlName: 'hotelPhone', required: true },
+    { label: "E-mail", type: "email", sizeMd: '6', sizeLg: '6', formControlName: 'hotelEmail', required: true },
+    { label: "Lien Map", type: "url", sizeMd: '12', sizeLg: '12', formControlName: 'hotelMap', required: true },
+    { label: "Site Internet", type: "url", sizeMd: '12', sizeLg: '12', formControlName: 'hotelWebsite' },
+    { label: "Check In", type: "time", sizeMd: '6', sizeLg: '6', formControlName: 'hotelCheckIn', required: true },
+    { label: "Check Out", type: "time", sizeMd: '6', sizeLg: '6', formControlName: 'hotelCheckOut', required: true },
+    { label: "Nom du Wi-Fi", type: "text", sizeMd: '6', sizeLg: '6', formControlName: 'hotelWifiName', required: true },
+    { label: "Mot de passe Wi-Fi", type: "text", sizeMd: '6', sizeLg: '6', formControlName: 'hotelWifiPassword', required: true },
+    { label: "Code Parking", type: "text", sizeMd: '12', sizeLg: '12', formControlName: 'hotelParking' },
   ];
 
-  formData: FormGroup = new FormGroup({
-    hotelName: new FormControl('', Validators.required),
-    hotelPhone: new FormControl('', Validators.required),
-    hotelEmail: new FormControl('', Validators.required),
-    hotelMap: new FormControl('', Validators.required),
-    hotelWebsite: new FormControl(''),
-    hotelCheckIn: new FormControl<Date | null>(null, Validators.required),
-    hotelCheckOut: new FormControl<Date | null>(null, Validators.required),
-    hotelWifiName: new FormControl('', Validators.required),
-    hotelWifiPassword: new FormControl('', Validators.required),
-    hotelParking: new FormControl('')
-  })
+  formData: FormGroup = new FormGroup(
+    this.formModel.reduce((controls, field) => {
+      controls[field.formControlName] = new FormControl(
+        '',
+        field.required ? Validators.required : []
+      );
+      return controls;
+    }, {} as Record<string, FormControl>)
+  );
 
-  onSubmitForm() {
-    const raw = this.formData.value;
-    const payload = {
-      ...raw,
-      hotelCheckIn: this.dtConvert.convertTimeToISO(raw.hotelCheckIn),
-      hotelCheckOut: this.dtConvert.convertTimeToISO(raw.hotelCheckOut)
+  async onSubmitForm() {
+    const formDataRaw = this.formData.value;
+
+    const data = {
+      ...formDataRaw,
+      hotelCheckIn: this.dtConvert.convertTimeToISO(formDataRaw.hotelCheckIn),
+      hotelCheckOut: this.dtConvert.convertTimeToISO(formDataRaw.hotelCheckOut)
     };
 
-    console.log(payload);
+    try {
+      this.newHotel 
+        ? await this.api.createHotel(data)
+        : await this.api.updateHotel(data, this.hotel?.id ?? 1);
 
-    this.api.createHotel(payload)
-      .then(() => {
-        this.getHotelData();
-        this.newHotel = false;
-      })
-      .catch((err) => {
-        console.error(`Erreur lors du POST ${err}`);
-      });
+      await this.getHotelData();
+      this.newHotel = false;
+
+    } catch (err) {
+      console.error("Erreur lors de la soumission :", err);
+    }
   }
+
 }
 
 interface FormField {
@@ -97,4 +95,5 @@ interface FormField {
   sizeMd: string;
   sizeLg: string;
   formControlName: string;
+  required?: boolean;
 }

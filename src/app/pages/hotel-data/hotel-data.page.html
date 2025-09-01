@@ -27,6 +27,65 @@
       </ion-grid>  
     </form>
   } @else {
-    <p>Pas la peine</p>
+    <div class="ion-padding">
+      
+      @if (hotel) {
+        <h1>{{ hotel.hotelName }}</h1>
+        <section>
+          <h2>Coordonnées</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col [sizeMd]="6">Téléphone</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelPhone }}</ion-col>
+              <ion-col [sizeMd]="6">E-Mail</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelEmail }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </section>
+
+        <hr>
+
+        <section>
+          <h2>Horaires Check</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col [sizeMd]="6">Check In</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelCheckIn }}</ion-col>
+              <ion-col [sizeMd]="6">Check Out</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelCheckOut }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </section>
+
+        <hr>
+
+        <section>
+          <h2>Wi-Fi</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col [sizeMd]="6">Nom du Wi-Fi</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelWifiName }}</ion-col>
+              <ion-col [sizeMd]="6">Mot de Passe</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelWifiPassword }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </section>
+
+        <hr>
+
+        <section>
+          <h2>Liens</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col [sizeMd]="6">Google Maps</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelMap }}</ion-col>
+              <ion-col [sizeMd]="6">Site Internet</ion-col>
+              <ion-col [sizeMd]="6">{{ hotel.hotelWebsite ?? "Pas de site internet" }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </section>
+      }
+    </div>
+    
   }
 </ion-content>
