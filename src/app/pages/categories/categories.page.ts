@@ -52,29 +52,26 @@ export class CategoriesPage implements OnInit {
   }
 
   async onSubmitForm() {
-    if (this.catToUpdate) {
-      await this.api.updateCategory(this.form.value, this.catToUpdate.id)
-        .then(async () => {
-          await this.initCategoriesList();
-          this.closeModal();
-          this.formBtnLabel = 'Créer une catégorie';
-        })
-        .catch((error) => {
-          console.error(`Erreur lors de la modification de la catégorie ID ${this.catToUpdate?.id} : ${error}`);
-          throw error;
-        }); 
-    } else {
-      await this.api.createCategory(this.form.value)
-        .then(async () => {
-          await this.initCategoriesList();
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.error(`Erreur lors de la création de la catégorie : ${error}`);
-          throw error;
-        });  
+    try {
+      if (this.catToUpdate) {
+        await this.api.updateCategory(this.form.value, this.catToUpdate.id)
+          .then(() => this.catToUpdate = undefined);
+        this.formBtnLabel = 'Créer une catégorie'; // spécifique à l'update
+      } else {
+        await this.api.createCategory(this.form.value);
+      }
+
+      await this.initCategoriesList();
+      this.closeModal();
+
+    } catch (error) {
+      const action = this.catToUpdate ? 'modification' : 'création';
+      const idInfo = this.catToUpdate ? ` ID ${this.catToUpdate.id}` : '';
+      console.error(`Erreur lors de la ${action} de la catégorie${idInfo} :`, error);
+      throw error;
     }
-  }
+}
+
 
   createCategory() {
     this.closeModal();
