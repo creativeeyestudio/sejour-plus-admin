@@ -70,6 +70,16 @@ export class Api {
     }
   }
 
+  async createCategory(categoryPayload: Partial<Category>) {
+    try {
+      const response = await axios.post(`${this.categoriesApi}`, categoryPayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async updateCategory(categoryPayload: Partial<Category>, id: number) {
     try {
       const response = await axios.patch(`${this.categoriesApi}/${id}`, categoryPayload);
