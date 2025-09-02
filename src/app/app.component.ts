@@ -15,6 +15,7 @@ export class AppComponent {
   public appPages = [
     { title: 'Tableau de bord', url: '/folder/inbox', icon: 'mail' },
     { title: 'Infos de l\'hôtel', url: '/hotel-data', icon: 'paper-plane' },
+    { title: 'Catégories', url: '/categories', icon: 'paper-plane' },
   ];
   constructor() {
     addIcons({ mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp });
