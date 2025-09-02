@@ -117,7 +117,7 @@ export class Api {
     }
   }
 
-  async getCategoriesByType(hotelInternal: boolean): Promise<CategoriesList> {
+  async getCategoriesByType(hotelInternal: number): Promise<CategoriesList> {
     try {
       const response = await axios.get<CategoriesList>(`${this.categoriesApi}/hotel-internal/${hotelInternal}`);
       return response.data;

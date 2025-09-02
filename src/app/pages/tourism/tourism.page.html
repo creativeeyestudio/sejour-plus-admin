@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Gestion des lieux touristiques</ion-title>
     <ion-buttons slot="end">
-      <ion-button>Ajouter un lieu</ion-button>
+      <ion-button id="open-modal">Ajouter un lieu</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -33,4 +33,46 @@
       }
     </ion-list>  
   }
+
+  <ion-modal trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Ajouter un lieu touristique</ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="danger">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list inset="true" [formGroup]="form">
+          <ion-item>
+            <ion-input label="Nom du lieu" labelPlacement="stacked" type="text" formControlName="tourismName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea label="Description" labelPlacement="stacked" formControlName="tourismContent"></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Téléphone" labelPlacement="stacked" type="tel" formControlName="tourismPhone"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Lien de réservation (Si existant)" labelPlacement="stacked" type="url" formControlName="tourismReserve"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Site internet (Si existant)" labelPlacement="stacked" type="url" formControlName="tourismWebsite"></ion-input>
+          </ion-item>
+            <ion-item>
+              <ion-select label="Catégorie" labelPlacement="stacked" formControlName="tourismCategory">
+                @for (cat of categoriesList?.member; track cat.id) {
+                  <ion-select-option value="`/api/categories/${cat.id}`">{{ cat.catName }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          <ion-item>
+            <ion-button>Créer un lieu touristique</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

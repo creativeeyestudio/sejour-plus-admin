@@ -47,7 +47,7 @@ export class ActivitiesPage implements OnInit {
 
   async initList() {
     this.list = await this.api.getActivities();
-    this.categories = await this.api.getCategoriesByType(true);
+    this.categories = await this.api.getCategoriesByType(1);
   }
 
   async onSubmitForm() {
