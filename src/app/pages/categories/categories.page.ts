@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonModal, IonList, IonItem, IonInput, IonCheckbox, IonLabel } from '@ionic/angular/standalone';
 import { Api } from 'src/app/services/api';
-import { CategoriesList } from 'src/app/interfaces/category';
+import { CategoriesList, Category } from 'src/app/interfaces/category';
 
 @Component({
   selector: 'app-categories',
@@ -16,6 +16,7 @@ export class CategoriesPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
 
   list?: CategoriesList;
+  catToUpdate?: Category;
   formBtnLabel: string = 'Créer une catégorie';
 
   private fb = inject(FormBuilder);
@@ -34,19 +35,77 @@ export class CategoriesPage implements OnInit {
     this.list = await this.api.getCategories();
   }
 
+  openModal() {
+    this.modal.isOpen = true;
+  }
+
   closeModal() {
-    this.modal.dismiss(null, 'close');
+    this.modal.isOpen = false;
+    this.reinitForm();
+  }
+
+  reinitForm() {
+    this.form.setValue({
+      catName: '',
+      hotelInternal: false,
+    });
   }
 
   async onSubmitForm() {
-    await this.api.createCategory(this.form.value)
-      .then(async () => {
-        await this.initCategoriesList();
-        this.closeModal()
+    if (this.catToUpdate) {
+      await this.api.updateCategory(this.form.value, this.catToUpdate.id)
+        .then(async () => {
+          await this.initCategoriesList();
+          this.closeModal();
+          this.formBtnLabel = 'Créer une catégorie';
+        })
+        .catch((error) => {
+          console.error(`Erreur lors de la modification de la catégorie ID ${this.catToUpdate?.id} : ${error}`);
+          throw error;
+        }); 
+    } else {
+      await this.api.createCategory(this.form.value)
+        .then(async () => {
+          await this.initCategoriesList();
+          this.closeModal();
+        })
+        .catch((error) => {
+          console.error(`Erreur lors de la création de la catégorie : ${error}`);
+          throw error;
+        });  
+    }
+  }
+
+  createCategory() {
+    this.closeModal();
+    this.openModal();
+    this.reinitForm();
+  }
+
+  async updateCategory(id: number) {
+    this.closeModal();
+    this.openModal();
+    this.formBtnLabel = 'Modifier la catégorie';
+    await this.api.getCategory(id)
+      .then((data) => {
+        this.catToUpdate = data;
+        this.form.setValue({
+          catName: data.catName,
+          hotelInternal: data.hotelInternal,
+        });
       })
       .catch((error) => {
-        console.error(`Erreur lors de la création de la catégorie : ${error}`);
+        console.error(`Erreur lors de la récupération de la catégorie ID ${id}`);
         throw error;
       });
+  }
+
+  async deleteCategory(id: number) {
+    await this.api.deleteCategory(id)
+      .then(() => this.initCategoriesList())
+      .catch((error) => {
+        console.error(`Erreur lors de la suppression de la catégorie ID ${id} : ${error}`);
+        throw error;
+      })
   }
 }

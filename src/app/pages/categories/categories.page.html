@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Gestion des categories</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal">Ajouter une catégorie</ion-button>
+      <ion-button (click)="createCategory()">Ajouter une catégorie</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -19,6 +19,10 @@
       @for (cat of list.member; track cat.id) {
         <ion-item>
           <ion-label>{{ cat.catName }} @if(cat.hotelInternal) { <span>(Interne)</span> }</ion-label>
+          <ion-buttons slot="end">
+            <ion-button (click)="updateCategory(cat.id)">Modifier</ion-button>
+            <ion-button color="danger" (click)="deleteCategory(cat.id)">Supprimer</ion-button>
+          </ion-buttons>
         </ion-item>
       }
     } @else {
