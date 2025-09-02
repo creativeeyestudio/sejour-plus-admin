@@ -12,3 +12,5 @@ export interface TourismList {
     member: Tourism[];
     totalItems: number;
 }
+
+export type TourismPayload = Omit<Tourism, 'id'>;

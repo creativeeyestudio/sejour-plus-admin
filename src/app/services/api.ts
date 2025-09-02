@@ -5,6 +5,7 @@ import { HotelData, HotelPayload } from '../interfaces/hotel-data';
 import { CategoriesList, Category, CategoryPayload } from '../interfaces/category';
 import { Service, ServicePayload, ServicesList } from '../interfaces/service';
 import { ActivitiesList, Activity, ActivityPayload } from '../interfaces/activity';
+import { Tourism, TourismList, TourismPayload } from '../interfaces/tourism';
 
 @Injectable({
   providedIn: 'root'
@@ -214,6 +215,61 @@ export class Api {
   async deleteActivity(id: number) {
     try {
       const response = await axios.delete<Activity>(`${this.activitiesApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  // ------------------------------------------
+  // Tourisme
+  // ------------------------------------------
+  private readonly tourismApi: string = `${environment.apiUrl}/api/tourism`;
+
+  async getTourismList(): Promise<TourismList> {
+    try {
+      const response = await axios.get<TourismList>(`${this.tourismApi}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de l'API "Lieux touristiques" : ${error}`);
+      throw error;
+    }
+  }
+
+  async getTourism(id: number): Promise<Tourism> {
+    try {
+      const response = await axios.get<Tourism>(`${this.tourismApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de l'API Tourisme avec ID ${id} : ${error}`);
+      throw error;
+    }
+  } 
+
+  async createTourism(tourismPayload: Partial<TourismPayload>) {
+    try {
+      const response = await axios.post<Tourism>(`${this.tourismApi}`, tourismPayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async updateTourism(tourismPayload: Partial<TourismPayload>, id: number) {
+    try {
+      const response = await axios.patch<Tourism>(`${this.tourismApi}/${id}`, tourismPayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteTourism(id: number) {
+    try {
+      const response = await axios.delete<Tourism>(`${this.tourismApi}/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
