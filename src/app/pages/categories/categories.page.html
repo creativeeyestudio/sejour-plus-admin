@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Gestion des categories</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createCategory()">Ajouter une catégorie</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Gestion des categories</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list inset="true">
+    @if (list && list.totalItems > 0) {
+      @for (cat of list.member; track cat.id) {
+        <ion-item>
+          <ion-label>{{ cat.catName }} @if(cat.hotelInternal) { <span>(Interne)</span> }</ion-label>
+          <ion-buttons slot="end">
+            <ion-button (click)="updateCategory(cat.id)">Modifier</ion-button>
+            <ion-button color="danger" (click)="deleteCategory(cat.id)">Supprimer</ion-button>
+          </ion-buttons>
+        </ion-item>
+      }
+    } @else {
+      <ion-item>
+        <ion-label>Aucune catégorie n'a été trouvée</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-modal trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Ajouter une activité</ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list [formGroup]="form" inset="true">
+          <ion-item>
+            <ion-input type="text" label="Nom de la catégorie" labelPlacement="stacked" formControlName="catName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox labelPlacement="end" formControlName="hotelInternal">Catégorie interne à l'établissement</ion-checkbox>
+          </ion-item>
+          <ion-item>
+            <ion-button (click)="onSubmitForm()">{{ formBtnLabel }}</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
