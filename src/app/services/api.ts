@@ -116,6 +116,16 @@ export class Api {
     }
   }
 
+  async getCategoriesByType(hotelInternal: boolean): Promise<CategoriesList> {
+    try {
+      const response = await axios.get<CategoriesList>(`${this.categoriesApi}/hotel-internal/${hotelInternal}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de l'API Catégories : ${error}`);
+      throw error;
+    }
+  }
+
   async getCategory(id: number): Promise<Category> {
     try {
       const response = await axios.get<Category>(`${this.categoriesApi}/${id}`);

@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Activités de l'hôtel</ion-title>
+    <ion-buttons slot="end">
+      <ion-button id="open-modal">Ajouter une activité</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -10,4 +13,59 @@
       <ion-title size="large">Activités de l'hôtel</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  @if (list) {
+    <ion-list inset="true">
+      @if (list.totalItems < 1) {
+        <ion-item>
+          <ion-label>Il n'y a pas d'activités</ion-label>
+        </ion-item>
+      } @else {
+        @for (item of list.member; track item.id) {
+          <ion-item>
+            <ion-label>{{ item.actName }}</ion-label>
+            <ion-buttons slot="end">
+              <ion-button color="danger" (click)="this.deleteActivity(item.id)">Supprimer</ion-button>
+            </ion-buttons>
+          </ion-item>
+        }
+      }
+    </ion-list>
+  }
+
+  <ion-modal trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Ajouter une activité</ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="danger">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list inset="true" [formGroup]="form">
+          <ion-item>
+            <ion-input label="Nom de l'activité" labelPlacement="stacked" type="text" formControlName="actName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea label="Description de l'activité" labelPlacement="stacked" formControlName="actContent"></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-select label="Catégorie" labelPlacement="stacked" formControlName="actCategory">
+              @for (item of categories?.member; track $index) {
+                <ion-select-option [value]='`/api/categories/${item.id}`'>{{ item.catName }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Lien de réservation (optionnel)" labelPlacement="stacked" type="url" formControlName="actReserve"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-button (click)="onSubmitForm()">Créer une activité</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
