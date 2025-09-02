@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HotelData, HotelPayload } from '../interfaces/hotel-data';
 import axios from 'axios';
 import { CategoriesList, Category } from '../interfaces/category';
+import { Service, ServicePayload, ServicesList } from '../interfaces/service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,6 @@ export class Api {
   async createHotel(hotelPayload: HotelPayload) {
     try {
       const response = await axios.post<HotelData>(`${this.hotelDataApi}`, hotelPayload);
-      console.log("Hôtel crée");
       return response.data;
     } catch (error) {
       console.error(error);
@@ -38,6 +38,61 @@ export class Api {
   async updateHotel(hotelPayload: Partial<HotelPayload>, id: number = 1) {
     try {
       const response = await axios.patch<HotelData>(`${this.hotelDataApi}/${id}`, hotelPayload)
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  // ------------------------------------------
+  // Services
+  // ------------------------------------------
+  private readonly servicesApi: string = `${environment.apiUrl}/api/services`;
+
+  async getServices(): Promise<ServicesList> {
+    try {
+      const response = await axios.get<ServicesList>(`${this.servicesApi}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getService(id: number): Promise<Service> {
+    try {
+      const response = await axios.get<Service>(`${this.servicesApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async createService(servicePayload: ServicePayload) {
+    try {
+      const response = await axios.post<Service>(`${this.servicesApi}`, servicePayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async updateService(servicePayload: Partial<ServicePayload>, id: number) {
+    try {
+      const response = await axios.patch<Service>(`${this.servicesApi}/${id}`, servicePayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteService(id: number) {
+    try {
+      const response = await axios.delete(`${this.servicesApi}/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
