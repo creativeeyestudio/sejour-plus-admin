@@ -64,12 +64,12 @@
             <ion-item>
               <ion-select label="Catégorie" labelPlacement="stacked" formControlName="tourismCategory">
                 @for (cat of categoriesList?.member; track cat.id) {
-                  <ion-select-option value="`/api/categories/${cat.id}`">{{ cat.catName }}</ion-select-option>
+                  <ion-select-option [value]="`/api/categories/${cat.id}`">{{ cat.catName }}</ion-select-option>
                 }
               </ion-select>
             </ion-item>
           <ion-item>
-            <ion-button>Créer un lieu touristique</ion-button>
+            <ion-button (click)="onSubmitForm()">Créer un lieu touristique</ion-button>
           </ion-item>
         </ion-list>
       </ion-content>

@@ -34,9 +34,32 @@ export class TourismPage implements OnInit {
     this.initList();
   }
 
+  closeModal() {
+    this.modal.isOpen = false;
+    this.modal.dismiss(null, 'cancel');
+  }
+
   async initList() {
     this.tourismList = await this.api.getTourismList();
     this.categoriesList = await this.api.getCategoriesByType(0);
+  }
+
+  async onSubmitForm() {
+    if(!this.form.valid) return;
+
+    console.log(this.form.value);
+
+    await this.api.createTourism(this.form.value)
+      .then(() => {
+        this.initList();
+        this.closeModal();
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err;
+      })
+
+    console.log(this.form.value);
   }
 
 }
