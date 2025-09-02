@@ -4,6 +4,7 @@ import { HotelData, HotelPayload } from '../interfaces/hotel-data';
 import axios from 'axios';
 import { CategoriesList, Category } from '../interfaces/category';
 import { Service, ServicePayload, ServicesList } from '../interfaces/service';
+import { ActivitiesList, Activity, ActivityPayload } from '../interfaces/activity';
 
 @Injectable({
   providedIn: 'root'
@@ -158,4 +159,55 @@ export class Api {
   // ------------------------------------------
   // Activités
   // ------------------------------------------
+  private readonly activitiesApi: string = `${environment.apiUrl}/api/activites`;
+
+  async getActivities(): Promise<ActivitiesList> {
+    try {
+      const response = await axios.get<ActivitiesList>(`${this.activitiesApi}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de l'API Activités : ${error}`);
+      throw error;
+    }
+  }
+
+  async getActivity(id: number): Promise<Activity> {
+    try {
+      const response = await axios.get<Activity>(`${this.activitiesApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de l'API Activité avec ID ${id} : ${error}`);
+      throw error;
+    }
+  }
+
+  async createActivity(activityPayload: Partial<ActivityPayload>) {
+    try {
+      const response = await axios.post<ActivityPayload>(`${this.activitiesApi}`, activityPayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async updateActivity(activityPayload: Partial<ActivityPayload>, id: number) {
+    try {
+      const response = await axios.patch<ActivityPayload>(`${this.activitiesApi}/${id}`, activityPayload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteActivity(id: number) {
+    try {
+      const response = await axios.delete<Activity>(`${this.activitiesApi}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }
