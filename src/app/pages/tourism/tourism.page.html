@@ -14,16 +14,23 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-list inset="true">
-    <ion-item>
-      <ion-label>Il n'y a pas de points touristiques ajoutés</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Nom du lieu</ion-label>
-      <ion-buttons slot="end">
-        <ion-button>Modifier</ion-button>
-        <ion-button>Supprimer</ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+  @if (tourismList) {
+    <ion-list inset="true">
+      @if (tourismList.totalItems < 1) {
+        <ion-item>
+          <ion-label>Il n'y a pas de points touristiques ajoutés</ion-label>
+        </ion-item>  
+      } @else {
+        @for (tourism of tourismList.member; track tourism.id) {
+          <ion-item>
+            <ion-label>{{ tourism.tourismName }}</ion-label>
+            <ion-buttons slot="end">
+              <ion-button>Modifier</ion-button>
+              <ion-button>Supprimer</ion-button>
+            </ion-buttons>
+          </ion-item>   
+        }
+      }
+    </ion-list>  
+  }
 </ion-content>
