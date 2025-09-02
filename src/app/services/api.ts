@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HotelData, HotelPayload } from '../interfaces/hotel-data';
 import axios from 'axios';
-import { CategoriesList, Category } from '../interfaces/category';
+import { HotelData, HotelPayload } from '../interfaces/hotel-data';
+import { CategoriesList, Category, CategoryPayload } from '../interfaces/category';
 import { Service, ServicePayload, ServicesList } from '../interfaces/service';
 import { ActivitiesList, Activity, ActivityPayload } from '../interfaces/activity';
 
@@ -93,7 +93,7 @@ export class Api {
 
   async deleteService(id: number) {
     try {
-      const response = await axios.delete(`${this.servicesApi}/${id}`);
+      const response = await axios.delete<Service>(`${this.servicesApi}/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -126,9 +126,9 @@ export class Api {
     }
   }
 
-  async createCategory(categoryPayload: Partial<Category>) {
+  async createCategory(categoryPayload: Partial<CategoryPayload>) {
     try {
-      const response = await axios.post(`${this.categoriesApi}`, categoryPayload);
+      const response = await axios.post<Category>(`${this.categoriesApi}`, categoryPayload);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -136,9 +136,9 @@ export class Api {
     }
   }
 
-  async updateCategory(categoryPayload: Partial<Category>, id: number) {
+  async updateCategory(categoryPayload: Partial<CategoryPayload>, id: number) {
     try {
-      const response = await axios.patch(`${this.categoriesApi}/${id}`, categoryPayload);
+      const response = await axios.patch<Category>(`${this.categoriesApi}/${id}`, categoryPayload);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -148,7 +148,7 @@ export class Api {
 
   async deleteCategory(id: number) {
     try {
-      const response = await axios.delete(`${this.categoriesApi}/${id}`);
+      const response = await axios.delete<Category>(`${this.categoriesApi}/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -183,7 +183,7 @@ export class Api {
 
   async createActivity(activityPayload: Partial<ActivityPayload>) {
     try {
-      const response = await axios.post<ActivityPayload>(`${this.activitiesApi}`, activityPayload);
+      const response = await axios.post<Activity>(`${this.activitiesApi}`, activityPayload);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -193,7 +193,7 @@ export class Api {
 
   async updateActivity(activityPayload: Partial<ActivityPayload>, id: number) {
     try {
-      const response = await axios.patch<ActivityPayload>(`${this.activitiesApi}/${id}`, activityPayload);
+      const response = await axios.patch<Activity>(`${this.activitiesApi}/${id}`, activityPayload);
       return response.data;
     } catch (error) {
       console.error(error);
