@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonLabel, IonItem, IonButtons, IonButton, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
-import { ActivitiesList } from 'src/app/interfaces/activity';
+import { ActivitiesList, Activity } from 'src/app/interfaces/activity';
 import { Api } from 'src/app/services/api';
 import { CategoriesList } from 'src/app/interfaces/category';
 
@@ -20,6 +20,9 @@ export class ActivitiesPage implements OnInit {
   
   list?: ActivitiesList;
   categories?: CategoriesList;
+  actToUpdate?: Activity;
+  formBtnLabel: string = 'Créer une activité';
+
   form: FormGroup = this.fb.group({
     actName: ['', Validators.required],
     actContent: ['', Validators.required],
@@ -31,8 +34,15 @@ export class ActivitiesPage implements OnInit {
     this.initList();
   }
 
+  openModal() {
+    this.modal.isOpen = true;
+  }
+
   closeModal() {
-    this.modal.dismiss(null, 'close');
+    this.modal.isOpen = false;
+    this.modal.dismiss(null, 'cancel');
+    this.formBtnLabel = 'Créer une activité';
+    this.actToUpdate = undefined;
   }
 
   async initList() {
@@ -43,15 +53,50 @@ export class ActivitiesPage implements OnInit {
   async onSubmitForm() {
     if (!this.form.valid) return;
 
-    await this.api.createActivity(this.form.value)
-      .then(async () => {
-        await this.initList();
-        this.closeModal()
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      })
+    if (this.actToUpdate) {
+      await this.api.updateActivity(this.form.value, this.actToUpdate.id)
+        .then(async () => {
+          await this.initList();
+          this.closeModal();
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err;
+        }) 
+    } else {
+      await this.api.createActivity(this.form.value)
+        .then(async () => {
+          await this.initList();
+          this.closeModal()
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err;
+        })  
+    }    
+  }
+
+  createActivity() {
+    this.form.setValue({
+      actName: '',
+      actContent: '',
+      actCategory: '',
+      actReserve: ''
+    })
+  }
+
+  async updateActivity(id: number) {
+    this.closeModal();
+    this.formBtnLabel = 'Modifier une activité';
+    const data: Activity = await this.api.getActivity(id);
+    this.actToUpdate = data;
+    this.form.setValue({
+      actName: data.actName,
+      actContent: data.actContent,
+      actCategory: data.actCategory,
+      actReserve: data.actReserve
+    })
+    this.openModal();
   }
 
   async deleteActivity(id: number) {
