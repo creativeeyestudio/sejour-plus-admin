@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Gestion des services</ion-title>
+    <ion-buttons slot="end">
+      <ion-button id="new-service">Ajouter un service</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Gestion des services</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list class="ion-padding" inset="true" lines="full">
+    @if (services && services.totalItems > 0) {
+      @for (service of services.member; track service.id) {
+        <ion-item>
+          <ion-label>{{ service.serviceName }}</ion-label>
+          <ion-button slot="end" (click)="this.updateService(service.id)">Modifier</ion-button>
+          <ion-button slot="end" (click)="this.deleteService(service.id)">Supprimer</ion-button>
+        </ion-item>    
+      }
+    } @else {
+      <ion-item>
+        <ion-label>Aucun service n'a été trouvé</ion-label>
+      </ion-item>  
+    }
+  </ion-list>  
+
+  <ion-modal trigger="new-service">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Ajouter un service</ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+          <ion-list [formGroup]="serviceForm">
+            <ion-item>
+              <ion-input label="Nom du service" labelPlacement="stacked" formControlName="serviceName"></ion-input>
+            </ion-item>
+            <ion-item class="ion-margin-vertical">
+              <ion-textarea label="Description" labelPlacement="stacked" formControlName="serviceDesc"></ion-textarea>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-button (click)="onSubmitForm()">{{ formSubmitLabel }}</ion-button>
+            </ion-item>
+          </ion-list> 
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  
+</ion-content>
