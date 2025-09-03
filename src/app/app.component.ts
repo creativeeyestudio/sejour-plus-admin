@@ -21,6 +21,7 @@ export class AppComponent {
   public actPages = [
     { title: 'Catégories', url: '/categories', icon: 'paper-plane' },
     { title: 'Activités de l\'hôtel', url: '/activities', icon: 'paper-plane' },
+    { title: 'Lieux touristiques', url: '/tourism', icon: 'paper-plane' },
   ]
   constructor() {
     addIcons({ mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp });
