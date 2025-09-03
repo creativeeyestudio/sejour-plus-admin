@@ -15,17 +15,14 @@ import { CategoriesList, Category } from 'src/app/interfaces/category';
 export class CategoriesPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
 
+  constructor(public api: Api, public fb: FormBuilder) {}
+
   list?: CategoriesList;
   catToUpdate?: Category;
-  formBtnLabel: string = 'Créer une catégorie';
-
-  private fb = inject(FormBuilder);
   form: FormGroup = this.fb.group({
     catName: ['', Validators.required],
     hotelInternal: [false, Validators.required],
   });
-
-  constructor(public api: Api) {}
 
   ngOnInit() {
     this.initCategoriesList();
@@ -36,30 +33,22 @@ export class CategoriesPage implements OnInit {
   }
 
   openModal() {
-    this.modal.isOpen = true;
+    this.modal.present();
   }
 
   closeModal() {
-    this.modal.isOpen = false;
-    this.reinitForm();
+    this.modal.dismiss(null, 'close');
   }
 
   reinitForm() {
-    this.form.setValue({
-      catName: '',
-      hotelInternal: false,
-    });
+    this.form.reset();
   }
 
   async onSubmitForm() {
     try {
-      if (this.catToUpdate) {
-        await this.api.updateCategory(this.form.value, this.catToUpdate.id)
-          .then(() => this.catToUpdate = undefined);
-        this.formBtnLabel = 'Créer une catégorie'; // spécifique à l'update
-      } else {
-        await this.api.createCategory(this.form.value);
-      }
+      this.catToUpdate 
+        ? await this.api.updateCategory(this.form.value, this.catToUpdate.id)
+        : await this.api.createCategory(this.form.value);
 
       await this.initCategoriesList();
       this.closeModal();
@@ -70,31 +59,16 @@ export class CategoriesPage implements OnInit {
       console.error(`Erreur lors de la ${action} de la catégorie${idInfo} :`, error);
       throw error;
     }
-}
-
-
-  createCategory() {
-    this.closeModal();
-    this.openModal();
-    this.reinitForm();
   }
 
   async updateCategory(id: number) {
-    this.closeModal();
     this.openModal();
-    this.formBtnLabel = 'Modifier la catégorie';
     await this.api.getCategory(id)
       .then((data) => {
         this.catToUpdate = data;
-        this.form.setValue({
-          catName: data.catName,
-          hotelInternal: data.hotelInternal,
-        });
+        this.form.patchValue(this.catToUpdate);
       })
-      .catch((error) => {
-        console.error(`Erreur lors de la récupération de la catégorie ID ${id}`);
-        throw error;
-      });
+      .catch((error) => console.error(`Erreur lors de la récupération de la catégorie ID ${id} : ${error}`));
   }
 
   async deleteCategory(id: number) {
