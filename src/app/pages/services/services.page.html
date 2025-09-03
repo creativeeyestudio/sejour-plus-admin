@@ -34,7 +34,9 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Ajouter un service</ion-title>
+          <ion-title>
+            {{ serviceToUpdate ? "Mettre à jour" : "Ajouter"}} un service
+          </ion-title>
           <ion-buttons slot="end">
             <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
           </ion-buttons>
@@ -49,7 +51,9 @@
               <ion-textarea label="Description" labelPlacement="stacked" formControlName="serviceDesc"></ion-textarea>
             </ion-item>
             <ion-item lines="none">
-              <ion-button (click)="onSubmitForm()">{{ formSubmitLabel }}</ion-button>
+              <ion-button (click)="onSubmitForm()">
+                {{ serviceToUpdate ? "Modifier" : "Créer"}} un service
+              </ion-button>
             </ion-item>
           </ion-list> 
       </ion-content>

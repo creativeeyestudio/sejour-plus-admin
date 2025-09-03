@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonLabel, IonItem, IonButton, IonButtons, IonModal, IonInput, IonTextarea } from '@ionic/angular/standalone';
@@ -15,17 +15,15 @@ import { Api } from 'src/app/services/api';
 export class ServicesPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
 
+  constructor(public api: Api, public fb: FormBuilder) {}
+
   services?: ServicesList;
   serviceToUpdate?: Service;
-  formSubmitLabel?: string = "Créer l'activité";
-  private fb = inject(FormBuilder);
 
   serviceForm = this.fb.group({
     serviceName: ['', Validators.required],
     serviceDesc: ['', Validators.required],
   })
-
-  constructor(public api: Api) {}
 
   ngOnInit() {
     this.initServicesList();
@@ -36,19 +34,15 @@ export class ServicesPage implements OnInit {
   }
 
   openModal() {
-    this.modal.isOpen = true;
+    this.modal.present();
   }
 
   closeModal() {
     this.modal.dismiss(null, 'cancel');
-    this.formSubmitLabel = "Créer l'activité";
   }
 
   async onSubmitForm() {
-    if (this.serviceForm.invalid) {
-      console.warn("Formulaire invalide");
-      return;
-    }
+    if (!this.serviceForm.valid) return;
 
     const rawValue = this.serviceForm.value;
 
@@ -59,32 +53,24 @@ export class ServicesPage implements OnInit {
     };
 
     try {
-      if(this.serviceToUpdate) {
-        await this.api.updateService(payload, this.serviceToUpdate.id)
-          .then(async () => {
-            await this.initServicesList();
-            this.closeModal();
-          }); 
-      } else {
-        await this.api.createService(payload)
-          .then(async () => {
-            await this.initServicesList();
-            this.closeModal();
-          });  
-      }
+      this.serviceToUpdate
+        ? await this.api.updateService(payload, this.serviceToUpdate.id)
+        : await this.api.createService(payload);
+
+      await this.initServicesList();
+      this.closeModal();
     } catch (error) {
-      console.error("Erreur lors de la création du service :", error);
+      console.error(
+        this.serviceToUpdate
+          ? `Erreur lors de la mise à jour du service ID ${this.serviceToUpdate.id} :`
+          : "Erreur lors de la création du service :", error
+      );
     }
   }
 
   async updateService(id: number) {
-    const data: Service = await this.api.getService(id);
-    this.formSubmitLabel = "Mettre à jour l'activité";
-    this.serviceForm.setValue({
-      serviceName: data.serviceName,
-      serviceDesc: data.serviceDesc
-    });
-    this.serviceToUpdate = data;
+    this.serviceToUpdate = await this.api.getService(id);
+    this.serviceForm.patchValue(this.serviceToUpdate);
     this.openModal();
   }
 
@@ -95,6 +81,5 @@ export class ServicesPage implements OnInit {
     } catch (error) {
       console.error("Erreur lors de la suppression du service :", error);
     }
-    
   }
 }
