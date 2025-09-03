@@ -47,8 +47,6 @@ export class TourismPage implements OnInit {
   async onSubmitForm() {
     if(!this.form.valid) return;
 
-    console.log(this.form.value);
-
     await this.api.createTourism(this.form.value)
       .then(() => {
         this.initList();
@@ -60,6 +58,15 @@ export class TourismPage implements OnInit {
       })
 
     console.log(this.form.value);
+  }
+
+  async deleteTourism(id: number) {
+    this.api.deleteTourism(id)
+      .then(() => this.initList())
+      .catch((err) => {
+        console.error(err);
+        throw err;
+      })
   }
 
 }
