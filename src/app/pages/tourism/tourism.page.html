@@ -26,7 +26,7 @@
             <ion-label>{{ tourism.tourismName }}</ion-label>
             <ion-buttons slot="end">
               <ion-button (click)="this.updateTourism(tourism.id)">Modifier</ion-button>
-              <ion-button (click)="this.deleteTourism(tourism.id)">Supprimer</ion-button>
+              <ion-button (click)="this.deleteTourism(tourism.id)" color="danger">Supprimer</ion-button>
             </ion-buttons>
           </ion-item>   
         }
