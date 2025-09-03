@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Gestion des lieux touristiques</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal">Ajouter un lieu</ion-button>
+      <ion-button id="open-modal" (click)="this.reinitForm()">Ajouter un lieu</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -25,7 +25,7 @@
           <ion-item>
             <ion-label>{{ tourism.tourismName }}</ion-label>
             <ion-buttons slot="end">
-              <ion-button>Modifier</ion-button>
+              <ion-button (click)="this.updateTourism(tourism.id)">Modifier</ion-button>
               <ion-button (click)="this.deleteTourism(tourism.id)">Supprimer</ion-button>
             </ion-buttons>
           </ion-item>   
