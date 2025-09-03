@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Gestion des lieux touristiques</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal" (click)="this.reinitForm()">Ajouter un lieu</ion-button>
+      <ion-button id="open-modal" (click)="reinitForm()">Ajouter un lieu</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -25,8 +25,8 @@
           <ion-item>
             <ion-label>{{ tourism.tourismName }}</ion-label>
             <ion-buttons slot="end">
-              <ion-button (click)="this.updateTourism(tourism.id)">Modifier</ion-button>
-              <ion-button (click)="this.deleteTourism(tourism.id)" color="danger">Supprimer</ion-button>
+              <ion-button (click)="updateTourism(tourism.id)">Modifier</ion-button>
+              <ion-button (click)="deleteTourism(tourism.id)" color="danger">Supprimer</ion-button>
             </ion-buttons>
           </ion-item>   
         }
@@ -38,9 +38,11 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Ajouter un lieu touristique</ion-title>
+          <ion-title>
+            {{ tourismToUpdate ? 'Modifier un lieu touristique' : 'Ajouter un lieu touristique' }}
+          </ion-title>
           <ion-buttons slot="end">
-            <ion-button color="danger">Fermer</ion-button>
+            <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -69,7 +71,9 @@
               </ion-select>
             </ion-item>
           <ion-item>
-            <ion-button (click)="onSubmitForm()">Créer un lieu touristique</ion-button>
+            <ion-button (click)="onSubmitForm()" expand="block">
+              {{ tourismToUpdate ? 'Mettre à jour le lieu touristique' : 'Créer un lieu touristique' }}
+            </ion-button>
           </ion-item>
         </ion-list>
       </ion-content>
