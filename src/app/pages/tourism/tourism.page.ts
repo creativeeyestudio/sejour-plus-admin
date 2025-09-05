@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonButtons, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { Tourism, TourismList } from 'src/app/interfaces/tourism';
 import { Api } from 'src/app/services/api';
 import { CategoriesList } from 'src/app/interfaces/category';
-import { open } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tourism',
