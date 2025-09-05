@@ -19,6 +19,7 @@ export class CategoriesPage implements OnInit {
 
   list?: CategoriesList;
   catToUpdate?: Category;
+  
   form: FormGroup = this.fb.group({
     catName: ['', Validators.required],
     hotelInternal: [false, Validators.required],

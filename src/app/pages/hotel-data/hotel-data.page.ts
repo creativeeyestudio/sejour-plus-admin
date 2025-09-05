@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonCol, IonGrid, IonRow, IonInput, IonButton } from '@ionic/angular/standalone';
 import { HotelData } from 'src/app/interfaces/hotel-data';
 import { Api } from 'src/app/services/api';
@@ -20,7 +20,7 @@ export class HotelDataPage implements OnInit {
   newHotel: boolean = false;
   updateHotel: boolean = false;
 
-  constructor(public api: Api, public dtConvert: DateTimeConverter) { }
+  constructor(public api: Api, public fb: FormBuilder, public dtConvert: DateTimeConverter) { }
 
   ngOnInit() {
     this.getHotelData();  
@@ -55,7 +55,7 @@ export class HotelDataPage implements OnInit {
     { label: "Code Parking", type: "text", sizeMd: '12', sizeLg: '12', formControlName: 'hotelParking' },
   ];
 
-  formData: FormGroup = new FormGroup(
+  formData: FormGroup = this.fb.group(
     this.formModel.reduce((controls, field) => {
       controls[field.formControlName] = new FormControl(
         '',
