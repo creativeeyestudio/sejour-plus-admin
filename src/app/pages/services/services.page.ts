@@ -19,7 +19,8 @@ export class ServicesPage implements OnInit {
 
   services?: ServicesList;
   serviceToUpdate?: Service;
-  apiCall = this.api.service;
+  
+  private apiCall = this.api.service;
 
   serviceForm = this.fb.group({
     serviceName: ['', Validators.required],

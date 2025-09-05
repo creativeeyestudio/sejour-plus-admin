@@ -22,7 +22,7 @@ export class ActivitiesPage implements OnInit {
   categories?: CategoriesList;
   actToUpdate?: Activity;
 
-  apiCall = this.api.activities;
+  private apiCall = this.api.activities;
 
   form: FormGroup = this.fb.group({
     actName: ['', Validators.required],

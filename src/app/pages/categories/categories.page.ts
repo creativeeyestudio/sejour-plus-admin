@@ -19,7 +19,8 @@ export class CategoriesPage implements OnInit {
 
   list?: CategoriesList;
   catToUpdate?: Category;
-  apiCall = this.api.categories;
+  
+  private apiCall = this.api.categories;
   
   form: FormGroup = this.fb.group({
     catName: ['', Validators.required],

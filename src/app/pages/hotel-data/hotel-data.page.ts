@@ -19,7 +19,8 @@ export class HotelDataPage implements OnInit {
   hotel?: HotelData;
   newHotel: boolean = false;
   updateHotel: boolean = false;
-  apiCall = this.api.hotel;
+  
+  private apiCall = this.api.hotel;
 
   constructor(public api: Api, public fb: FormBuilder, public dtConvert: DateTimeConverter) { }
 

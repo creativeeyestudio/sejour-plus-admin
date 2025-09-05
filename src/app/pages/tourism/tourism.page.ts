@@ -21,7 +21,8 @@ export class TourismPage implements OnInit {
   tourismList?: TourismList;
   tourismToUpdate?: Tourism;
   categoriesList?: CategoriesList;
-  apiCall = this.api.tourism;
+  
+  private apiCall = this.api.tourism;
 
   form: FormGroup = this.fb.group({
     tourismName: ['', Validators.required],
