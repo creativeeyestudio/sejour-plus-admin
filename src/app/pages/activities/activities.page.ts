@@ -21,7 +21,8 @@ export class ActivitiesPage implements OnInit {
   list?: ActivitiesList;
   categories?: CategoriesList;
   actToUpdate?: Activity;
-  formBtnLabel: string = 'Créer une activité';
+
+  private apiCall = this.api.activities;
 
   form: FormGroup = this.fb.group({
     actName: ['', Validators.required],
@@ -34,78 +35,54 @@ export class ActivitiesPage implements OnInit {
     this.initList();
   }
 
-  openModal() {
-    this.modal.isOpen = true;
-  }
-
-  closeModal() {
-    this.modal.isOpen = false;
-    this.modal.dismiss(null, 'cancel');
-    this.formBtnLabel = 'Créer une activité';
+  reinitForm() {
+    this.form.reset();
     this.actToUpdate = undefined;
   }
 
+  openModal() {
+    this.modal.present();
+  }
+
+  closeModal() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
   async initList() {
-    this.list = await this.api.getActivities();
+    this.list = await this.apiCall.getAll();
     this.categories = await this.api.getCategoriesByType(1);
   }
 
   async onSubmitForm() {
-    if (!this.form.valid) return;
+    if (this.form.invalid) return;
 
-    if (this.actToUpdate) {
-      await this.api.updateActivity(this.form.value, this.actToUpdate.id)
-        .then(async () => {
-          await this.initList();
-          this.closeModal();
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        }) 
-    } else {
-      await this.api.createActivity(this.form.value)
-        .then(async () => {
-          await this.initList();
-          this.closeModal()
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        })  
-    }    
-  }
+    try {
+      this.actToUpdate
+        ? await this.apiCall.update(this.actToUpdate.id, this.form.value)
+        : await this.apiCall.create(this.form.value);
 
-  createActivity() {
-    this.form.setValue({
-      actName: '',
-      actContent: '',
-      actCategory: '',
-      actReserve: ''
-    })
+      await this.initList();
+      this.closeModal();
+    } catch (err) {
+      console.error(
+        this.actToUpdate
+          ? `Erreur lors de la modification de l'activité ID ${this.actToUpdate.id} :`
+          : "Erreur lors de la création de l'activité :",
+        err
+      );
+    }
   }
 
   async updateActivity(id: number) {
-    this.closeModal();
-    this.formBtnLabel = 'Modifier une activité';
-    const data: Activity = await this.api.getActivity(id);
-    this.actToUpdate = data;
-    this.form.setValue({
-      actName: data.actName,
-      actContent: data.actContent,
-      actCategory: data.actCategory,
-      actReserve: data.actReserve
-    })
+    this.actToUpdate = await this.apiCall.getOne(id);
+    this.form.patchValue(this.actToUpdate);
     this.openModal();
   }
 
   async deleteActivity(id: number) {
-    await this.api.deleteActivity(id)
+    await this.apiCall.delete(id)
       .then(() => this.initList())
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      })
+      .catch((err) => console.error(err))
   }
 
 }

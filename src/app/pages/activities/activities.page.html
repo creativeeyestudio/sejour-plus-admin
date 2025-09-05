@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Activités de l'hôtel</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal" (click)="this.createActivity()">Ajouter une activité</ion-button>
+      <ion-button id="activity-modal" (click)="reinitForm()">Ajouter une activité</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -25,8 +25,8 @@
           <ion-item>
             <ion-label>{{ item.actName }}</ion-label>
             <ion-buttons slot="end">
-              <ion-button (click)="this.updateActivity(item.id)">Modifier</ion-button>
-              <ion-button color="danger" (click)="this.deleteActivity(item.id)">Supprimer</ion-button>
+              <ion-button (click)="updateActivity(item.id)">Modifier</ion-button>
+              <ion-button (click)="deleteActivity(item.id)" color="danger">Supprimer</ion-button>
             </ion-buttons>
           </ion-item>
         }
@@ -34,11 +34,13 @@
     </ion-list>
   }
 
-  <ion-modal trigger="open-modal">
+  <ion-modal trigger="activity-modal">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Ajouter une activité</ion-title>
+          <ion-title>
+            {{ this.actToUpdate ? "Mettre à jour" : "Ajouter" }} une activité
+          </ion-title>
           <ion-buttons slot="end">
             <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
           </ion-buttons>
@@ -63,7 +65,9 @@
             <ion-input label="Lien de réservation (optionnel)" labelPlacement="stacked" type="url" formControlName="actReserve"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-button (click)="onSubmitForm()">{{ formBtnLabel }}</ion-button>
+            <ion-button (click)="onSubmitForm()">
+              {{ this.actToUpdate ? "Modifier" : "Créer" }} une activité
+            </ion-button>
           </ion-item>
         </ion-list>
       </ion-content>

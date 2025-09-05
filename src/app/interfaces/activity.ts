@@ -10,5 +10,3 @@ export interface ActivitiesList {
     member: Activity[];
     totalItems: number;
 }
-
-export type ActivityPayload = Omit<Activity, 'id'>;

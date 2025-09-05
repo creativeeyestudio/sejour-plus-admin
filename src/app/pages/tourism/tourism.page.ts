@@ -5,7 +5,6 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel
 import { Tourism, TourismList } from 'src/app/interfaces/tourism';
 import { Api } from 'src/app/services/api';
 import { CategoriesList } from 'src/app/interfaces/category';
-import { open } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tourism',
@@ -22,6 +21,8 @@ export class TourismPage implements OnInit {
   tourismList?: TourismList;
   tourismToUpdate?: Tourism;
   categoriesList?: CategoriesList;
+  
+  private apiCall = this.api.tourism;
 
   form: FormGroup = this.fb.group({
     tourismName: ['', Validators.required],
@@ -37,79 +38,54 @@ export class TourismPage implements OnInit {
   }
 
   openModal() {
-    this.modal.isOpen = true;
+    this.modal.present();
   }
 
   closeModal() {
-    this.modal.isOpen = false;
     this.modal.dismiss(null, 'cancel');
   }
 
   async initList() {
-    this.tourismList = await this.api.getTourismList();
+    this.tourismList = await this.apiCall.getAll();
     this.categoriesList = await this.api.getCategoriesByType(0);
   }
 
   reinitForm() {
     this.tourismToUpdate = undefined;
-    this.form.setValue({
-      tourismName: '',
-      tourismContent: '',
-      tourismPhone: '',
-      tourismReserve: '',
-      tourismCategory: '',
-      tourismWebsite: '',
-    })
+    this.form.reset();
   }
 
   async onSubmitForm() {
-    if(!this.form.valid) return;
+    if (this.form.invalid) return;
 
-    if (this.tourismToUpdate) {
-      await this.api.updateTourism(this.form.value, this.tourismToUpdate.id)
-        .then(() => {
-          this.initList();
-          this.closeModal();
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        })  
-    } else {
-      await this.api.createTourism(this.form.value)
-        .then(() => {
-          this.initList();
-          this.closeModal();
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        })  
+    try {
+      const data = this.form.value
+      this.tourismToUpdate
+        ? await this.apiCall.update(this.tourismToUpdate.id, data)
+        : await this.apiCall.create(data);
+
+      await this.initList();
+      this.closeModal();
+
+    } catch (err) {
+      console.error("Erreur lors de la soumission du formulaire tourisme :", err);
     }
   }
 
   async updateTourism(id: number) {
-    this.closeModal();
-    const data = await this.api.getTourism(id);
-    this.tourismToUpdate = data;
-    this.form.setValue({
-      tourismName: data.tourismName,
-      tourismContent: data.tourismContent,
-      tourismPhone: data.tourismPhone,
-      tourismReserve: data.tourismReserve,
-      tourismCategory: data.tourismCategory,
-      tourismWebsite: data.tourismWebsite,
-    })
-    this.openModal();
+    try {
+      this.tourismToUpdate = await this.apiCall.getOne(id);
+      this.form.patchValue(this.tourismToUpdate);
+      this.openModal();
+    } catch (err) {
+      console.error(`Erreur lors du chargement du tourisme ID ${id} :`, err);
+    }
   }
 
   async deleteTourism(id: number) {
-    this.api.deleteTourism(id)
+    this.apiCall.delete(id)
       .then(() => this.initList())
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      })
+      .catch((err) => console.error(err))
   }
 
 }

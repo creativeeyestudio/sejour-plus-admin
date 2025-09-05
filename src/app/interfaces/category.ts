@@ -8,5 +8,3 @@ export interface CategoriesList {
     member: Category[];
     totalItems: number;
 }
-
-export type CategoryPayload = Omit<Category, "id">;

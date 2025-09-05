@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonCol, IonGrid, IonRow, IonInput, IonButton } from '@ionic/angular/standalone';
 import { HotelData } from 'src/app/interfaces/hotel-data';
 import { Api } from 'src/app/services/api';
@@ -19,8 +19,10 @@ export class HotelDataPage implements OnInit {
   hotel?: HotelData;
   newHotel: boolean = false;
   updateHotel: boolean = false;
+  
+  private apiCall = this.api.hotel;
 
-  constructor(public api: Api, public dtConvert: DateTimeConverter) { }
+  constructor(public api: Api, public fb: FormBuilder, public dtConvert: DateTimeConverter) { }
 
   ngOnInit() {
     this.getHotelData();  
@@ -31,7 +33,7 @@ export class HotelDataPage implements OnInit {
   // ---------------------------------------------
   async getHotelData() {
     try {
-      this.hotel = await this.api.getHotel();
+      this.hotel = await this.apiCall.getOne();
     } catch (error: any) {
       (error.response.status === 404) 
         ? this.newHotel = true
@@ -55,7 +57,7 @@ export class HotelDataPage implements OnInit {
     { label: "Code Parking", type: "text", sizeMd: '12', sizeLg: '12', formControlName: 'hotelParking' },
   ];
 
-  formData: FormGroup = new FormGroup(
+  formData: FormGroup = this.fb.group(
     this.formModel.reduce((controls, field) => {
       controls[field.formControlName] = new FormControl(
         '',
@@ -76,8 +78,8 @@ export class HotelDataPage implements OnInit {
 
     try {
       this.newHotel 
-        ? await this.api.createHotel(data)
-        : await this.api.updateHotel(data, this.hotel?.id ?? 1);
+        ? await this.apiCall.create(data)
+        : await this.apiCall.update(this.hotel?.id ?? 1, data);
 
       await this.getHotelData();
       this.newHotel = false;

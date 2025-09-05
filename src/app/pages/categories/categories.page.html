@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Gestion des categories</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="createCategory()">Ajouter une catégorie</ion-button>
+      <ion-button id="cat-modal" (click)="reinitForm()">Ajouter une catégorie</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -21,7 +21,7 @@
           <ion-label>{{ cat.catName }} @if(cat.hotelInternal) { <span>(Interne)</span> }</ion-label>
           <ion-buttons slot="end">
             <ion-button (click)="updateCategory(cat.id)">Modifier</ion-button>
-            <ion-button color="danger" (click)="deleteCategory(cat.id)">Supprimer</ion-button>
+            <ion-button (click)="deleteCategory(cat.id)" color="danger">Supprimer</ion-button>
           </ion-buttons>
         </ion-item>
       }
@@ -32,11 +32,13 @@
     }
   </ion-list>
 
-  <ion-modal trigger="open-modal">
+  <ion-modal trigger="cat-modal">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Ajouter une catégorie</ion-title>
+          <ion-title>
+            {{ catToUpdate ? 'Ajouter' : 'Mettre à jour' }} une catégorie
+          </ion-title>
           <ion-buttons slot="end">
             <ion-button color="danger" (click)="closeModal()">Fermer</ion-button>
           </ion-buttons>
@@ -51,7 +53,9 @@
             <ion-checkbox labelPlacement="end" formControlName="hotelInternal">Catégorie interne à l'établissement</ion-checkbox>
           </ion-item>
           <ion-item>
-            <ion-button (click)="onSubmitForm()">{{ formBtnLabel }}</ion-button>
+            <ion-button (click)="onSubmitForm()">
+              {{ catToUpdate ? 'Modifier' : 'Ajouter' }} une catégorie
+            </ion-button>
           </ion-item>
         </ion-list>
       </ion-content>
