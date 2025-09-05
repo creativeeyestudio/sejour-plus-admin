@@ -11,5 +11,3 @@ export interface HotelData {
     hotelWifiPassword: string,
     hotelParking?: string
 }
-
-export type HotelPayload = Omit<HotelData, "id">;

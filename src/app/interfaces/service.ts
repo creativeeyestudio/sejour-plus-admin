@@ -9,5 +9,3 @@ export interface ServicesList {
     member: Service[];
     totalItems: number;
 }
-
-export type ServicePayload = Omit<Service, "id">;
