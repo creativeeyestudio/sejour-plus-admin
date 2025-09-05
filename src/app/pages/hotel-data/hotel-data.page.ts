@@ -19,6 +19,7 @@ export class HotelDataPage implements OnInit {
   hotel?: HotelData;
   newHotel: boolean = false;
   updateHotel: boolean = false;
+  apiCall = this.api.hotel;
 
   constructor(public api: Api, public fb: FormBuilder, public dtConvert: DateTimeConverter) { }
 
@@ -31,7 +32,7 @@ export class HotelDataPage implements OnInit {
   // ---------------------------------------------
   async getHotelData() {
     try {
-      this.hotel = await this.api.getHotel();
+      this.hotel = await this.apiCall.getOne();
     } catch (error: any) {
       (error.response.status === 404) 
         ? this.newHotel = true
@@ -76,8 +77,8 @@ export class HotelDataPage implements OnInit {
 
     try {
       this.newHotel 
-        ? await this.api.createHotel(data)
-        : await this.api.updateHotel(data, this.hotel?.id ?? 1);
+        ? await this.apiCall.create(data)
+        : await this.apiCall.update(this.hotel?.id ?? 1, data);
 
       await this.getHotelData();
       this.newHotel = false;

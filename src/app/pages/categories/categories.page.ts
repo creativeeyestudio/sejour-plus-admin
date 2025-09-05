@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonModal, IonList, IonItem, IonInput, IonCheckbox, IonLabel } from '@ionic/angular/standalone';
@@ -19,6 +19,7 @@ export class CategoriesPage implements OnInit {
 
   list?: CategoriesList;
   catToUpdate?: Category;
+  apiCall = this.api.categories;
   
   form: FormGroup = this.fb.group({
     catName: ['', Validators.required],
@@ -30,7 +31,7 @@ export class CategoriesPage implements OnInit {
   }
 
   async initCategoriesList() {
-    this.list = await this.api.getCategories();
+    this.list = await this.apiCall.getAll();
   }
 
   openModal() {
@@ -48,8 +49,8 @@ export class CategoriesPage implements OnInit {
   async onSubmitForm() {
     try {
       this.catToUpdate 
-        ? await this.api.updateCategory(this.form.value, this.catToUpdate.id)
-        : await this.api.createCategory(this.form.value);
+        ? await this.apiCall.update(this.catToUpdate.id, this.form.value)
+        : await this.apiCall.create(this.form.value);
 
       await this.initCategoriesList();
       this.closeModal();
@@ -64,7 +65,7 @@ export class CategoriesPage implements OnInit {
 
   async updateCategory(id: number) {
     this.openModal();
-    await this.api.getCategory(id)
+    await this.apiCall.getOne(id)
       .then((data) => {
         this.catToUpdate = data;
         this.form.patchValue(this.catToUpdate);
@@ -73,7 +74,7 @@ export class CategoriesPage implements OnInit {
   }
 
   async deleteCategory(id: number) {
-    await this.api.deleteCategory(id)
+    await this.apiCall.delete(id)
       .then(() => this.initCategoriesList())
       .catch((error) => {
         console.error(`Erreur lors de la suppression de la catégorie ID ${id} : ${error}`);

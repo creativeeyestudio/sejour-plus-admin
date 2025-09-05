@@ -22,6 +22,7 @@ export class TourismPage implements OnInit {
   tourismList?: TourismList;
   tourismToUpdate?: Tourism;
   categoriesList?: CategoriesList;
+  apiCall = this.api.tourism;
 
   form: FormGroup = this.fb.group({
     tourismName: ['', Validators.required],
@@ -45,7 +46,7 @@ export class TourismPage implements OnInit {
   }
 
   async initList() {
-    this.tourismList = await this.api.getTourismList();
+    this.tourismList = await this.apiCall.getAll();
     this.categoriesList = await this.api.getCategoriesByType(0);
   }
 
@@ -60,8 +61,8 @@ export class TourismPage implements OnInit {
     try {
       const data = this.form.value
       this.tourismToUpdate
-        ? await this.api.updateTourism(data, this.tourismToUpdate.id)
-        : await this.api.createTourism(data);
+        ? await this.apiCall.update(this.tourismToUpdate.id, data)
+        : await this.apiCall.create(data);
 
       await this.initList();
       this.closeModal();
@@ -73,7 +74,7 @@ export class TourismPage implements OnInit {
 
   async updateTourism(id: number) {
     try {
-      this.tourismToUpdate = await this.api.getTourism(id);
+      this.tourismToUpdate = await this.apiCall.getOne(id);
       this.form.patchValue(this.tourismToUpdate);
       this.openModal();
     } catch (err) {
@@ -82,7 +83,7 @@ export class TourismPage implements OnInit {
   }
 
   async deleteTourism(id: number) {
-    this.api.deleteTourism(id)
+    this.apiCall.delete(id)
       .then(() => this.initList())
       .catch((err) => console.error(err))
   }

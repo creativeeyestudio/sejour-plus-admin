@@ -19,6 +19,7 @@ export class ServicesPage implements OnInit {
 
   services?: ServicesList;
   serviceToUpdate?: Service;
+  apiCall = this.api.service;
 
   serviceForm = this.fb.group({
     serviceName: ['', Validators.required],
@@ -30,7 +31,7 @@ export class ServicesPage implements OnInit {
   }
 
   async initServicesList() {
-    this.services = await this.api.getServices();
+    this.services = await this.apiCall.getAll();
   }
 
   openModal() {
@@ -54,8 +55,8 @@ export class ServicesPage implements OnInit {
 
     try {
       this.serviceToUpdate
-        ? await this.api.updateService(payload, this.serviceToUpdate.id)
-        : await this.api.createService(payload);
+        ? await this.apiCall.update(this.serviceToUpdate.id, payload)
+        : await this.apiCall.create(payload);
 
       await this.initServicesList();
       this.closeModal();
@@ -69,14 +70,14 @@ export class ServicesPage implements OnInit {
   }
 
   async updateService(id: number) {
-    this.serviceToUpdate = await this.api.getService(id);
+    this.serviceToUpdate = await this.apiCall.getOne(id);
     this.serviceForm.patchValue(this.serviceToUpdate);
     this.openModal();
   }
 
   async deleteService(id: number) {
     try {
-      await this.api.deleteService(id)
+      await this.apiCall.delete(id)
         .then(async () => await this.initServicesList());
     } catch (error) {
       console.error("Erreur lors de la suppression du service :", error);

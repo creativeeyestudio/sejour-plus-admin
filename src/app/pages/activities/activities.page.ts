@@ -22,6 +22,8 @@ export class ActivitiesPage implements OnInit {
   categories?: CategoriesList;
   actToUpdate?: Activity;
 
+  apiCall = this.api.activities;
+
   form: FormGroup = this.fb.group({
     actName: ['', Validators.required],
     actContent: ['', Validators.required],
@@ -47,7 +49,7 @@ export class ActivitiesPage implements OnInit {
   }
 
   async initList() {
-    this.list = await this.api.getActivities();
+    this.list = await this.apiCall.getAll();
     this.categories = await this.api.getCategoriesByType(1);
   }
 
@@ -56,8 +58,8 @@ export class ActivitiesPage implements OnInit {
 
     try {
       this.actToUpdate
-        ? await this.api.updateActivity(this.form.value, this.actToUpdate.id)
-        : await this.api.createActivity(this.form.value);
+        ? await this.apiCall.update(this.actToUpdate.id, this.form.value)
+        : await this.apiCall.create(this.form.value);
 
       await this.initList();
       this.closeModal();
@@ -72,13 +74,13 @@ export class ActivitiesPage implements OnInit {
   }
 
   async updateActivity(id: number) {
-    this.actToUpdate = await this.api.getActivity(id);
+    this.actToUpdate = await this.apiCall.getOne(id);
     this.form.patchValue(this.actToUpdate);
     this.openModal();
   }
 
   async deleteActivity(id: number) {
-    await this.api.deleteActivity(id)
+    await this.apiCall.delete(id)
       .then(() => this.initList())
       .catch((err) => console.error(err))
   }
