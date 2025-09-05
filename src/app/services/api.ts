@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import axios from 'axios';
-import { HotelData, HotelPayload } from '../interfaces/hotel-data';
-import { CategoriesList, Category, CategoryPayload } from '../interfaces/category';
-import { Service, ServicePayload, ServicesList } from '../interfaces/service';
-import { ActivitiesList, Activity, ActivityPayload } from '../interfaces/activity';
-import { Tourism, TourismList, TourismPayload } from '../interfaces/tourism';
+import { HotelData } from '../interfaces/hotel-data';
+import { CategoriesList, Category } from '../interfaces/category';
+import { Service, ServicesList } from '../interfaces/service';
+import { ActivitiesList, Activity } from '../interfaces/activity';
+import { Tourism, TourismList } from '../interfaces/tourism';
 
 @Injectable({
   providedIn: 'root'
@@ -16,132 +16,31 @@ export class Api {
   // ------------------------------------------
   // Hotel Data
   // ------------------------------------------
-  private readonly hotelDataApi: string = `${environment.apiUrl}/api/hotels`;
-  private hotel = new ApiCall<HotelData>;
-
-  async getHotel(id: number = 1): Promise<HotelData> {
-    return this.hotel.getOne(this.hotelDataApi, id);
-  }
-
-  async createHotel(hotelPayload: HotelPayload) {
-    return this.hotel.create(this.hotelDataApi, hotelPayload);
-  }
-
-  async updateHotel(hotelPayload: Partial<HotelPayload>, id: number = 1) {
-    return this.hotel.update(this.hotelDataApi, id, hotelPayload);
-  }
+  hotel = new ResourceApi<HotelData, HotelData>(`${environment.apiUrl}/api/hotels`);
 
   // ------------------------------------------
   // Services
   // ------------------------------------------
-  private readonly servicesApi: string = `${environment.apiUrl}/api/services`;
-  private servicesList = new ApiCall<ServicesList>;
-  private service = new ApiCall<Service>;
-
-  async getServices(): Promise<ServicesList> {
-    return this.servicesList.getAll(this.servicesApi);
-  }
-
-  async getService(id: number): Promise<Service> {
-    return this.service.getOne(this.servicesApi, id);
-  }
-
-  async createService(servicePayload: ServicePayload) {
-    return this.service.create(this.servicesApi, servicePayload);
-  }
-
-  async updateService(servicePayload: Partial<ServicePayload>, id: number) {
-    return this.service.update(this.servicesApi, id, servicePayload);
-  }
-
-  async deleteService(id: number) {
-    return this.service.delete(this.servicesApi, id);
-  }
+  service = new ResourceApi<Service, ServicesList>(`${environment.apiUrl}/api/services`);
 
   // ------------------------------------------
   // Catégories
   // ------------------------------------------
-  private readonly categoriesApi: string = `${environment.apiUrl}/api/categories`;
-  private categoriesList = new ApiCall<CategoriesList>;
-  private category = new ApiCall<Category>;
-
-  async getCategories(): Promise<CategoriesList> {
-    return this.categoriesList.getAll(this.categoriesApi);
-  }
+  categories = new ResourceApi<Category, CategoriesList>(`${environment.apiUrl}/api/categories`);
 
   async getCategoriesByType(hotelInternal: number): Promise<CategoriesList> {
-    return this.categoriesList.getAll(`${this.categoriesApi}/hotel-internal/${hotelInternal}`);
-  }
-
-  async getCategory(id: number): Promise<Category> {
-    return this.category.getOne(this.categoriesApi, id);
-  }
-
-  async createCategory(categoryPayload: Partial<CategoryPayload>) {
-    return this.category.create(this.categoriesApi, categoryPayload);
-  }
-
-  async updateCategory(categoryPayload: Partial<CategoryPayload>, id: number) {
-    return this.category.update(this.categoriesApi, id, categoryPayload);
-  }
-
-  async deleteCategory(id: number) {
-    return this.category.delete(this.categoriesApi, id);
+    return this.categories.getAllByPath(`hotel-internal/${hotelInternal}`);
   }
 
   // ------------------------------------------
   // Activités
   // ------------------------------------------
-  private readonly activitiesApi: string = `${environment.apiUrl}/api/activites`;
-  private activityList = new ApiCall<ActivitiesList>;
-  private activity = new ApiCall<Activity>;
-
-  async getActivities(): Promise<ActivitiesList> {
-    return this.activityList.getAll(this.activitiesApi);
-  }
-
-  async getActivity(id: number): Promise<Activity> {
-    return this.activity.getOne(this.activitiesApi, id);
-  }
-
-  async createActivity(activityPayload: Partial<ActivityPayload>) {
-    return this.activity.create(this.activitiesApi, activityPayload);
-  }
-
-  async updateActivity(activityPayload: Partial<ActivityPayload>, id: number) {
-    return this.activity.update(this.activitiesApi, id, activityPayload);
-  }
-
-  async deleteActivity(id: number) {
-    return this.activity.delete(this.activitiesApi, id);
-  }
+  activities = new ResourceApi<Activity, ActivitiesList>(`${environment.apiUrl}/api/activites`);
 
   // ------------------------------------------
   // Tourisme
   // ------------------------------------------
-  private readonly tourismApi: string = `${environment.apiUrl}/api/tourism`;
-  private tourismList = new ApiCall<TourismList>;
-  private tourism = new ApiCall<Tourism>;
-
-  async getTourismList(): Promise<TourismList> {
-    return this.tourismList.getAll(this.tourismApi);
-  }
-
-  async getTourism(id: number): Promise<Tourism> {
-    return this.tourism.getOne(this.tourismApi, id);
-  } 
-
-  async createTourism(tourismPayload: Partial<TourismPayload>) {
-    return this.tourism.create(this.tourismApi, tourismPayload);
-  }
-
-  async updateTourism(tourismPayload: Partial<TourismPayload>, id: number) {
-    return this.tourism.update(this.tourismApi, id, tourismPayload);
-  }
-
-  async deleteTourism(id: number) {
-    return this.tourism.delete(this.tourismApi, id);
-  }
+  tourism = new ResourceApi<Tourism, TourismList>(`${environment.apiUrl}/api/tourism`);
 }
 
 class ResourceApi<T, TList> {
@@ -154,7 +53,11 @@ class ResourceApi<T, TList> {
     return this.apiList.getAll(this.apiUrl);
   }
 
-  getOne(id: number): Promise<T> {
+  getAllByPath(path: string): Promise<TList> {
+    return this.apiList.getAll(`${this.apiUrl}/${path}`);
+  }
+
+  getOne(id: number = 1): Promise<T> {
     return this.api.getOne(this.apiUrl, id);
   }
 
@@ -162,7 +65,7 @@ class ResourceApi<T, TList> {
     return this.api.create(this.apiUrl, payload);
   }
 
-  update(id: number, payload: Partial<T>): Promise<T> {
+  update(id: number = 1, payload: Partial<T>): Promise<T> {
     return this.api.update(this.apiUrl, id, payload);
   }
 
